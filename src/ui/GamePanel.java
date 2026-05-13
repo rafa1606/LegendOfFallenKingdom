@@ -375,8 +375,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 if (archerRenderer != null) archerRenderer.triggerAttack();
                 // Tembak panah ke musuh!
                 projectiles.add(new Projectile(
-                        200, HEIGHT - 200,           // posisi Archer
-                        WIDTH - 200, HEIGHT - 200,   // posisi Enemy
+                        210, HEIGHT - 170,           // posisi Archer
+                        WIDTH - 140, HEIGHT - 170,   // posisi Enemy
                         new Color(180, 130, 40)      // warna coklat
                 ));
                 if (enemyRenderer != null) enemyRenderer.triggerHit();
@@ -386,8 +386,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 floatingTexts.add(new FloatingText("GOOD!", fx, fy, Color.YELLOW));
                 if (archerRenderer != null) archerRenderer.triggerAttack();
                 projectiles.add(new Projectile(
-                        200, HEIGHT - 200,
-                        WIDTH - 200, HEIGHT - 200,
+                        210, HEIGHT - 170,
+                        WIDTH - 140, HEIGHT - 170,
                         new Color(180, 130, 40)
                 ));
                 if (enemyRenderer != null) enemyRenderer.triggerHit();

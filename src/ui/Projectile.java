@@ -49,7 +49,7 @@ public class Projectile {
         float dx = targetX - x;
         float dy = targetY - y;
         float dist = (float) Math.sqrt(dx*dx + dy*dy);
-        if (dist < 20) {
+        if (dist < 5) {
             hit   = true;
             hitTimer = 0;
         }
@@ -59,7 +59,7 @@ public class Projectile {
         if (!active) return;
 
         if (hit) {
-            // Efek ledakan kecil saat kena
+            // Efek ledakan saat kena
             g2d.setColor(new Color(255, 200, 50, 200));
             g2d.fillOval((int)x - 15, (int)y - 15, 30, 30);
             g2d.setColor(Color.WHITE);
@@ -67,31 +67,22 @@ public class Projectile {
             return;
         }
 
-        // Gambar panah
-        g2d.setColor(color);
+        // Gambar peluru (lingkaran kecil + ekor)
+        g2d.setColor(new Color(255, 255, 100)); // kuning terang
+        g2d.fillOval((int)x - 6, (int)y - 6, 12, 12);
+
+        // Ekor peluru
+        g2d.setColor(new Color(255, 150, 50, 180));
         g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-
-        // Body panah
         float angle = (float) Math.atan2(speedY, speedX);
-        float tailX = x - (float)Math.cos(angle) * length;
-        float tailY = y - (float)Math.sin(angle) * length;
+        float tailX = x - (float)Math.cos(angle) * 20;
+        float tailY = y - (float)Math.sin(angle) * 20;
         g2d.drawLine((int)tailX, (int)tailY, (int)x, (int)y);
-
-        // Ujung panah (segitiga kecil)
-        g2d.setColor(new Color(200, 150, 50));
-        int[] px = {
-                (int)(x + Math.cos(angle) * 8),
-                (int)(x + Math.cos(angle + 2.5) * 8),
-                (int)(x + Math.cos(angle - 2.5) * 8)
-        };
-        int[] py = {
-                (int)(y + Math.sin(angle) * 8),
-                (int)(y + Math.sin(angle + 2.5) * 8),
-                (int)(y + Math.sin(angle - 2.5) * 8)
-        };
-        g2d.fillPolygon(px, py, 3);
-
         g2d.setStroke(new BasicStroke(1));
+
+        // Kilatan cahaya
+        g2d.setColor(new Color(255, 255, 255, 150));
+        g2d.fillOval((int)x - 3, (int)y - 3, 6, 6);
     }
 
     public boolean isActive() { return active; }
