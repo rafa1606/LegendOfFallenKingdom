@@ -16,7 +16,7 @@ public class GameManager {
 
     // ── Constructor ──────────────────────────────────────────
     public GameManager() {
-        this.player        = new Player("Archer");
+        this.player        = new Player("Daren");
         this.battleManager = new BattleManager(player);
         this.storyManager  = new StoryManager();
         this.scoreManager  = new ScoreManager();
