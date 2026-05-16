@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import manager.SoundManager;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
@@ -54,6 +55,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         bounceBar     = new BounceBar(150, HEIGHT - 90, 500, 30);
         gameLoop      = new Timer(1000 / 60, this);
         gameLoop.start();
+        SoundManager.getInstance().playBGM("menu");
     }
 
     private BufferedImage loadImage(String path) {
@@ -74,6 +76,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         setupCharacterRenderers();
         setupBounceBar();
         loadBackground();
+        if (gameManager.getStage() == 4) {
+            SoundManager.getInstance().playBGM("boss");
+        } else {
+            SoundManager.getInstance().playBGM("battle");
+        }
     }
 
     private void loadBackground() {
@@ -371,6 +378,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         switch (zone) {
             case "GREEN":
+                SoundManager.getInstance().playSFX("enemy_hit");
                 floatingTexts.add(new FloatingText("PERFECT!", fx, fy, Color.GREEN));
                 if (archerRenderer != null) archerRenderer.triggerAttack();
                 // Tembak panah ke musuh!
@@ -383,6 +391,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 break;
 
             case "YELLOW":
+                SoundManager.getInstance().playSFX("enemy_hit");
                 floatingTexts.add(new FloatingText("GOOD!", fx, fy, Color.YELLOW));
                 if (archerRenderer != null) archerRenderer.triggerAttack();
                 projectiles.add(new Projectile(
@@ -394,6 +403,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 break;
 
             case "RED":
+                SoundManager.getInstance().playSFX("miss");
                 floatingTexts.add(new FloatingText("MISS!", fx, fy, Color.RED));
                 if (archerRenderer != null) archerRenderer.triggerHit();
                 // Musuh jalan ke player dan mukul!
@@ -403,6 +413,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         if (gameManager.isGameOver()) {
             gameState = "GAMEOVER";
+            if (gameManager.checkEnding().equals("BAD_ENDING")) {
+                SoundManager.getInstance().playBGM("gameover");
+            } else {
+                SoundManager.getInstance().playBGM("victory");
+            }
             return;
         }
 

@@ -91,6 +91,7 @@ public class Player extends Character implements Attackable, Skillable {
         setHp(getMaxHp());
         System.out.println("LEVEL UP! Sekarang Level " + getLevel());
         System.out.println("Attack: " + getAttack() + " | Max HP: " + getMaxHp());
+        manager.SoundManager.getInstance().playSFX("levelup");
     }
 
     // ── Sistem Combo ─────────────────────────────────────────
