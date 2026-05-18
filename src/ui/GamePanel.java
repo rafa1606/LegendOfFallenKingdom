@@ -92,11 +92,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     private void loadBackground() {
         currentBackground = loadImage(
-                "../assets/backgrounds/bg_stage" + gameManager.getStage() + ".png");
+                "assets/backgrounds/bg_stage" + gameManager.getStage() + ".png");
     }
 
     private void setupCharacterRenderers() {
-        String base = "../assets/";
+        String base = "assets/";
         archerRenderer = new CharacterRenderer(
                 base + "characters/archer",
                 "Elf_01__IDLE_",
@@ -407,7 +407,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
                 String entry = (i+1) + ".  " +
                         scores.get(i).getName() +
-                        "  —  " + scores.get(i).getScore();
+                        "  :  " + scores.get(i).getScore();
                 drawCentered(g2d, entry, WIDTH/2, startY + i * 40);
             }
         }

@@ -11,7 +11,7 @@ public class SoundManager {
     private float   sfxVolume  = 1.0f;
     private boolean isMuted    = false;
 
-    private static final String SOUND_PATH = "../assets/sounds/";
+    private static final String SOUND_PATH = "assets/sounds/";
 
     // ── Singleton ─────────────────────────────────────────────
     private static SoundManager instance;
