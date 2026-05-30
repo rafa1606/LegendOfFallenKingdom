@@ -509,6 +509,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 if (enemyRenderer  != null) enemyRenderer.triggerWalkAttack(false);
                 break;
         }
+        // Cek Devil masuk phase 2
+        if (gameManager.getCurrentEnemy() instanceof enemies.Devil &&
+                gameManager.getCurrentEnemy().getPhase() == 2 &&
+                !showingStory) {
+            showingStory = true;
+            storyTimer   = 0;
+            gameManager.getStoryManager().showDevilPhase2();
+        }
 
         if (gameManager.isGameOver()) {
             gameState       = "GAMEOVER";

@@ -7,11 +7,11 @@ public class Devil extends Enemy implements Skillable {
     private int hpRegen; // HP regen per pantulan
 
     public Devil() {
-        super("Devil", 150, 40, 8,
-              500, 0,
-              2, 1.2f,
-              0.15f, 0.25f); // merah = 70%
-        this.hpRegen = 2;
+        super("Devil", 250, 50, 10,
+                500, 0,
+                2, 0.6f,         // lebih cepat dari 1.2f
+                0.08f, 0.15f);   // zona hijau 8%, kuning 15%, merah 77%
+        this.hpRegen = 8;      // regen lebih besar dari 5
     }
 
     // ── Override attack() ─────────────────────────────────────
@@ -40,16 +40,26 @@ public class Devil extends Enemy implements Skillable {
         if (withRegen) regenHp();
     }
 
-    // ── Override triggerPhase2() — Devil tidak punya phase 2 ──
-    @Override
-    public void triggerPhase2() {
-        System.out.println("Devil tidak memiliki phase 2 — boss final!");
-    }
-
     // ── HP Regen pasif per pantulan ───────────────────────────
     public void regenHp() {
         healHp(hpRegen);
         System.out.println("Devil regenerasi HP! +" + hpRegen + " HP. HP: " + getHp());
+    }
+
+    @Override
+    public void triggerPhase2() {
+        setPhase(2);
+        setPassiveActive(true);
+        setMaxHp(150);
+        setHp(150);
+        setAttack(60);
+        setBounceCount(2);
+        setBounceInterval(0.6f);  // sangat cepat
+        setGreenZone(0.8f);      // zona hijau hanya 5%!
+        setYellowZone(0.15f);     // zona kuning 10%
+        setXpReward(1000);
+        this.hpRegen = 10;        // regen makin besar
+        System.out.println("DEVIL PHASE 2! Kekuatan penuh iblis terlepas!");
     }
 
     // ── Implementasi Skillable ────────────────────────────────

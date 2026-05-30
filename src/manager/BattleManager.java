@@ -127,15 +127,23 @@ public class BattleManager {
             return;
         }
 
-        // Devil — langsung mati tanpa phase 2
-        if (!currentEnemy.isAlive() && currentEnemy instanceof Devil) {
-            isBattleOver = true;
-            battleResult = "WIN";
-            int[] reward = currentEnemy.dropReward();
-            player.gainXP(reward[0]);
-            player.addScore(reward[0] * 10);
-            System.out.println("\n=== DEVIL DIKALAHKAN! ===");
-            return;
+        // Devil — cek phase
+        if (currentEnemy instanceof Devil) {
+            Devil devil = (Devil) currentEnemy;
+            if (!currentEnemy.isAlive() && devil.getPhase() == 1) {
+                // Masuk phase 2
+                devil.triggerPhase2();
+                return; // belum menang
+            } else if (!currentEnemy.isAlive() && devil.getPhase() == 2) {
+                // Devil benar-benar kalah
+                isBattleOver = true;
+                battleResult = "WIN";
+                int[] reward = currentEnemy.dropReward();
+                player.gainXP(reward[0]);
+                player.addScore(reward[0] * 10);
+                System.out.println("\n=== DEVIL DIKALAHKAN! ===");
+                return;
+            }
         }
     }
 

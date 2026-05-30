@@ -46,6 +46,12 @@ public class StoryManager {
         startText(BOSS_DIALOG);
     }
 
+    public void showDevilPhase2() {
+        startText(
+                "HAHAHAHA! Kau mengira itu yang terkuat dariku?\n" +
+                        "Rasakan kekuatan sesungguhnya sang Iblis!");
+    }
+
     private void startText(String text) {
         this.currentText  = text;
         this.displayIndex = 0;
@@ -114,4 +120,5 @@ public class StoryManager {
                         "dan Kerajaan akan selamanya dikuasai\n" +
                         "oleh bayang-bayang iblis...");
     }
+
 }
