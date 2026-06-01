@@ -38,6 +38,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private int                transitionDelay   = 120;
     private String             playerNameInput   = "";
     private boolean            isInputtingName   = false;
+    private boolean enemyDying = false;
 
     private static class FloatingText {
         String text; int x, y; float alpha; Color color;
@@ -102,6 +103,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 "Elf_01__IDLE_",
                 "Elf_01__ATTACK_",
                 "Elf_01__HURT_",
+                "Elf_01__DIE_",
                 30, HEIGHT - 300, 130, 260, true
         );
         switch (gameManager.getStage()) {
@@ -111,6 +113,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         "ORK_01_IDLE_",
                         "ORK_01_ATTAK_",
                         "ORK_01_HURT_",
+                        "ORK_01_DIE_",
                         WIDTH - 280, HEIGHT - 320, 250, 280, false
                 );
                 break;
@@ -120,6 +123,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         "ORK_03_IDLE_",
                         "ORK_03_ATTACK_",
                         "ORK_03_HURT_",
+                        "ORK_03_DIE_",
                         WIDTH - 280, HEIGHT - 320, 250, 280, false
                 );
                 break;
@@ -129,6 +133,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         "Troll_03_1_IDLE_",
                         "Troll_03_1_ATTACK_",
                         "Troll_03_1_HURT_",
+                        "Troll_03_1_DIE_",
                         WIDTH - 280, HEIGHT - 320, 250, 280, false
                 );
                 break;
@@ -138,6 +143,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         "Idle_",
                         "Attack_",
                         "Hurt_",
+                        "Dead_",
                         WIDTH - 280, HEIGHT - 320, 250, 280, false
                 );
                 break;
@@ -160,6 +166,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     private void update() {
         if (!gameState.equals("BATTLE")) return;
+
+        if (enemyDying && enemyRenderer != null) {
+            enemyRenderer.update();
+            if (enemyRenderer.isDeathDone()) {
+                enemyDying      = false;
+                gameState       = "GAMEOVER";
+                isInputtingName = true;
+                playerNameInput = "";
+            }
+            return;
+        }
 
         gameManager.getStoryManager().update();
         if (showingStory) {
@@ -196,6 +213,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     "MISS!", WIDTH/2 - 40, HEIGHT - 130, Color.RED));
             if (archerRenderer != null) archerRenderer.triggerHit();
             if (enemyRenderer  != null) enemyRenderer.triggerAttack();
+
+            projectiles.add(createEnemyProjectile());
 
             if (gameManager.isGameOver()) {
                 gameState       = "GAMEOVER";
@@ -468,6 +487,33 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g2d.drawString(text, cx - fm.stringWidth(text)/2, cy);
     }
 
+    private Projectile createEnemyProjectile() {
+        // Dari musuh (kanan) → ke Daren (kiri)
+        float startX = WIDTH - 200;  // posisi musuh
+        float startY = HEIGHT - 200;
+        float endX   = 120;          // posisi Daren
+        float endY   = HEIGHT - 180;
+
+        Color mainColor = new Color(20, 20, 20);
+        Color glowColor;
+
+        enemies.Enemy enemy = gameManager.getCurrentEnemy();
+        if (enemy instanceof enemies.Goblin) {
+            glowColor = new Color(50, 200, 50);
+        } else if (enemy instanceof enemies.Orc) {
+            glowColor = new Color(200, 80, 20);
+        } else if (enemy instanceof enemies.DarkKnight) {
+            glowColor = new Color(120, 0, 200);
+        } else if (enemy instanceof enemies.Devil) {
+            glowColor = new Color(200, 0, 0);
+        } else {
+            glowColor = new Color(100, 100, 100);
+        }
+
+        return new Projectile(startX, startY, endX, endY,
+                mainColor, glowColor, true);
+    }
+
     private void handleInput() {
         if (!gameState.equals("BATTLE")) return;
         if (!bounceBar.isActive()) return;
@@ -484,20 +530,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 SoundManager.getInstance().playSFX("enemy_hit");
                 floatingTexts.add(new FloatingText("PERFECT!", fx, fy, Color.GREEN));
                 if (archerRenderer != null) archerRenderer.triggerAttack();
+                // Peluru dari ujung pistol Daren ke tengah musuh
                 projectiles.add(new Projectile(
-                        210, HEIGHT - 170,
-                        WIDTH - 140, HEIGHT - 170,
+                        190, HEIGHT - 170,           // posisi Daren
+                        WIDTH - 155, HEIGHT - 200,   // posisi musuh
                         new Color(255, 255, 100)
                 ));
                 if (enemyRenderer != null) enemyRenderer.triggerHit();
                 break;
+
             case "YELLOW":
                 SoundManager.getInstance().playSFX("enemy_hit");
                 floatingTexts.add(new FloatingText("GOOD!", fx, fy, Color.YELLOW));
                 if (archerRenderer != null) archerRenderer.triggerAttack();
                 projectiles.add(new Projectile(
-                        210, HEIGHT - 170,
-                        WIDTH - 140, HEIGHT - 170,
+                        190, HEIGHT - 170,
+                        WIDTH - 155, HEIGHT - 200,
                         new Color(255, 255, 100)
                 ));
                 if (enemyRenderer != null) enemyRenderer.triggerHit();
@@ -506,7 +554,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 SoundManager.getInstance().playSFX("miss");
                 floatingTexts.add(new FloatingText("MISS!", fx, fy, Color.RED));
                 if (archerRenderer != null) archerRenderer.triggerHit();
-                if (enemyRenderer  != null) enemyRenderer.triggerWalkAttack(false);
+                if (enemyRenderer  != null) enemyRenderer.triggerAttack();
+
+                // Tembak sihir dari musuh ke Daren
+                projectiles.add(createEnemyProjectile());
                 break;
         }
         // Cek Devil masuk phase 2
@@ -519,13 +570,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
 
         if (gameManager.isGameOver()) {
-            gameState       = "GAMEOVER";
-            isInputtingName = true;
-            playerNameInput = "";
             if (gameManager.checkEnding().equals("BAD_ENDING")) {
+                // Langsung game over
+                gameState       = "GAMEOVER";
+                isInputtingName = true;
+                playerNameInput = "";
                 SoundManager.getInstance().stopBGM();
                 SoundManager.getInstance().playBGM("gameover");
             } else {
+                // Trigger animasi mati musuh dulu
+                enemyDying = true;
+                if (enemyRenderer != null) enemyRenderer.triggerDeath();
                 SoundManager.getInstance().stopBGM();
                 SoundManager.getInstance().playBGM("victory");
             }
@@ -558,6 +613,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     enemy.getGreenZone(), enemy.getYellowZone()
             );
         }
+        // Cek Devil masuk phase 2
+        if (gameManager.getCurrentEnemy() instanceof enemies.Devil) {
+            enemies.Devil devil = (enemies.Devil) gameManager.getCurrentEnemy();
+            if (devil.getPhase() == 2 && !showingStory
+                    && !gameManager.getStoryManager().isDisplaying()) {
+                showingStory = true;
+                storyTimer   = 0;
+                gameManager.getStoryManager().showDevilPhase2();
+            }
+        }
     }
 
     @Override
@@ -571,11 +636,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                         showingStory = false;
                         storyTimer   = 0;
                         gameManager.getStoryManager().hide();
-                        setupBounceBar();
+                        if (!enemyDying) {
+                            setupBounceBar();
+                        }
                     }
                     break;
                 }
-                if (gameState.equals("BATTLE")) handleInput();
+                if (gameState.equals("BATTLE") && !enemyDying) handleInput();
                 break;
 
             case KeyEvent.VK_BACK_SPACE:

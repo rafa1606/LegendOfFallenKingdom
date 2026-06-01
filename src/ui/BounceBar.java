@@ -128,14 +128,20 @@ public class BounceBar {
 
     // ── Deteksi zona saat player input ───────────────────────
     public String getZoneAtCurrentPosition() {
-        float redW  = (1.0f - greenZone - yellowZone) / 2;
-        float greenStart = redW + yellowZone / 2;
-        float greenEnd   = greenStart + greenZone;
-        float yellowEnd  = redW + yellowZone / 2 + greenZone + yellowZone / 2;
+        // Pembagian zona dari kiri ke kanan:
+        // [MERAH] [KUNING] [HIJAU] [KUNING] [MERAH]
+        float redW    = (1.0f - greenZone - yellowZone) / 2;
+        float yellowW = yellowZone / 2;
+
+        float yellowStart = redW;
+        float greenStart  = redW + yellowW;
+        float greenEnd    = greenStart + greenZone;
+        float yellowEnd   = greenEnd + yellowW;
 
         if (position >= greenStart && position <= greenEnd) {
             return "GREEN";
-        } else if (position >= redW && position <= yellowEnd) {
+        } else if ((position >= yellowStart && position < greenStart) ||
+                (position > greenEnd && position <= yellowEnd)) {
             return "YELLOW";
         } else {
             return "RED";

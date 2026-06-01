@@ -32,11 +32,15 @@ public class CharacterRenderer {
     private int     walkTimer    = 0;
     private int     walkDuration = 40; // frame jalan
     private boolean walkingRight = false;
+    private List<BufferedImage> deathFrames = new ArrayList<>();
+    private boolean isDying   = false;
+    private boolean deathDone = false;
 
     public CharacterRenderer(String folder,
                              String idlePrefix,
                              String attackPrefix,
                              String hurtPrefix,
+                             String deathPrefix,
                              int x, int targetY,
                              int width, int height,
                              boolean facingRight) {
@@ -51,6 +55,7 @@ public class CharacterRenderer {
         idleFrames   = loadFrames(folder, idlePrefix);
         attackFrames = loadFrames(folder, attackPrefix);
         hurtFrames   = loadFrames(folder, hurtPrefix);
+        deathFrames = loadFrames(folder, deathPrefix);
         currentFrames = idleFrames;
 
         System.out.println("[" + folder + "]");
@@ -91,6 +96,19 @@ public class CharacterRenderer {
     }
 
     public void update() {
+        if (isDying) {
+            currentFrames = deathFrames.isEmpty() ? hurtFrames : deathFrames;
+            frameTimer++;
+            if (frameTimer >= frameDelay) {
+                frameTimer = 0;
+                if (frameIndex < currentFrames.size() - 1) {
+                    frameIndex++;
+                } else {
+                    deathDone = true;
+                }
+            }
+            return;
+        }
         if (isSpawning) {
             y += 10;
             if (y >= targetY) { y = targetY; isSpawning = false; }
@@ -202,6 +220,17 @@ public class CharacterRenderer {
             frameTimer = 0;
         }
     }
+    public void triggerDeath() {
+        if (!isDying) {
+            isDying    = true;
+            deathDone  = false;
+            frameIndex = 0;
+            frameTimer = 0;
+        }
+    }
+
+    public boolean isDeathDone() { return deathDone; }
+    public boolean isDying()     { return isDying; }
 
     public boolean isSpawning() { return isSpawning; }
 }

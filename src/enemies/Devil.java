@@ -10,7 +10,7 @@ public class Devil extends Enemy implements Skillable {
         super("Devil", 250, 50, 10,
                 500, 0,
                 2, 0.6f,         // lebih cepat dari 1.2f
-                0.08f, 0.15f);   // zona hijau 8%, kuning 15%, merah 77%
+                0.05f, 0.10f);   // zona hijau 5%, kuning 10%, merah 85%
         this.hpRegen = 8;      // regen lebih besar dari 5
     }
 
@@ -54,9 +54,9 @@ public class Devil extends Enemy implements Skillable {
         setHp(150);
         setAttack(60);
         setBounceCount(2);
-        setBounceInterval(0.6f);  // sangat cepat
-        setGreenZone(0.8f);      // zona hijau hanya 5%!
-        setYellowZone(0.15f);     // zona kuning 10%
+        setBounceInterval(0.5f);  // sangat cepat
+        setGreenZone(0.3f);      // zona hijau hanya 5%!
+        setYellowZone(0.7f);     // zona kuning 10%
         setXpReward(1000);
         this.hpRegen = 10;        // regen makin besar
         System.out.println("DEVIL PHASE 2! Kekuatan penuh iblis terlepas!");
