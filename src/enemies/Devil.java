@@ -54,12 +54,12 @@ public class Devil extends Enemy implements Skillable {
         setHp(150);
         setAttack(60);
         setBounceCount(2);
-        setBounceInterval(0.5f);  // sangat cepat
-        setGreenZone(0.3f);      // zona hijau hanya 5%!
-        setYellowZone(0.7f);     // zona kuning 10%
+        setBounceInterval(0.4f);
+        setGreenZone(0.04f);   // ← hijau hanya 4%
+        setYellowZone(0.06f);  // ← kuning hanya 6%, merah 90%
         setXpReward(1000);
-        this.hpRegen = 10;        // regen makin besar
-        System.out.println("DEVIL PHASE 2! Kekuatan penuh iblis terlepas!");
+        this.hpRegen = 15;
+        System.out.println("DEVIL PHASE 2!");
     }
 
     // ── Implementasi Skillable ────────────────────────────────

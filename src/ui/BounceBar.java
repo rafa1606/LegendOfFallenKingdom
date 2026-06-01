@@ -82,36 +82,38 @@ public class BounceBar {
         }
     }
 
-    // ── Draw ke canvas ────────────────────────────────────────
     public void draw(Graphics2D g2d) {
-        // Background bar
-        g2d.setColor(COLOR_BG);
-        g2d.fillRoundRect(x, y, width, height, 10, 10);
-
-        // Zona Merah (full background dulu)
+        // Background merah dulu
         g2d.setColor(COLOR_RED);
         g2d.fillRoundRect(x, y, width, height, 10, 10);
 
-        // Zona Kuning (kiri & kanan tengah)
-        float redW    = (1.0f - greenZone - yellowZone) / 2;
-        int   yellowX = x + (int)(width * redW);
-        int   yellowW = (int)(width * (greenZone + yellowZone));
+        // Hitung zona
+        float redW    = (1.0f - greenZone - yellowZone) / 2.0f;
+        float yellowW = yellowZone / 2.0f;
+
+        // Zona kuning kiri
+        int yx1 = x + (int)(width * redW);
+        int yw  = (int)(width * yellowW);
         g2d.setColor(COLOR_YELLOW);
-        g2d.fillRect(yellowX, y, yellowW, height);
+        g2d.fillRect(yx1, y, yw, height);
 
-        // Zona Hijau (tengah)
-        float greenStart = redW + yellowZone / 2;
-        int   greenX     = x + (int)(width * greenStart);
-        int   greenW     = (int)(width * greenZone);
+        // Zona hijau tengah
+        int gx = x + (int)(width * (redW + yellowW));
+        int gw = (int)(width * greenZone);
         g2d.setColor(COLOR_GREEN);
-        g2d.fillRect(greenX, y, greenW, height);
+        g2d.fillRect(gx, y, gw, height);
 
-        // Garis border
+        // Zona kuning kanan
+        int yx2 = x + (int)(width * (redW + yellowW + greenZone));
+        g2d.setColor(COLOR_YELLOW);
+        g2d.fillRect(yx2, y, yw, height);
+
+        // Border
         g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(2));
         g2d.drawRoundRect(x, y, width, height, 10, 10);
 
-        // Pointer (bar bergerak)
+        // Pointer
         if (active) {
             int pointerX = x + (int)(position * width) - 4;
             g2d.setColor(COLOR_BAR);
@@ -120,28 +122,25 @@ public class BounceBar {
             g2d.drawRect(pointerX, y - 5, 8, height + 10);
         }
 
-        // Bounce counter
+        g2d.setStroke(new BasicStroke(1));
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 12));
         g2d.drawString("Bounce: " + Math.max(0, bounceCount), x, y - 10);
     }
 
-    // ── Deteksi zona saat player input ───────────────────────
     public String getZoneAtCurrentPosition() {
-        // Pembagian zona dari kiri ke kanan:
-        // [MERAH] [KUNING] [HIJAU] [KUNING] [MERAH]
-        float redW    = (1.0f - greenZone - yellowZone) / 2;
-        float yellowW = yellowZone / 2;
+        float redW    = (1.0f - greenZone - yellowZone) / 2.0f;
+        float yellowW = yellowZone / 2.0f;
 
-        float yellowStart = redW;
-        float greenStart  = redW + yellowW;
-        float greenEnd    = greenStart + greenZone;
-        float yellowEnd   = greenEnd + yellowW;
+        float yellowStart1 = redW;
+        float greenStart   = redW + yellowW;
+        float greenEnd     = greenStart + greenZone;
+        float yellowEnd2   = greenEnd + yellowW;
 
         if (position >= greenStart && position <= greenEnd) {
             return "GREEN";
-        } else if ((position >= yellowStart && position < greenStart) ||
-                (position > greenEnd && position <= yellowEnd)) {
+        } else if ((position >= yellowStart1 && position < greenStart) ||
+                (position > greenEnd && position <= yellowEnd2)) {
             return "YELLOW";
         } else {
             return "RED";

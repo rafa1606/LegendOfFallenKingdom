@@ -39,6 +39,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private String             playerNameInput   = "";
     private boolean            isInputtingName   = false;
     private boolean enemyDying = false;
+    private boolean devilPhase2Shown = false; // ← TAMBAH INI
 
     private static class FloatingText {
         String text; int x, y; float alpha; Color color;
@@ -81,6 +82,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         showingStory = true;
         storyTimer   = 0;
         gameManager.startGame();
+        devilPhase2Shown = false;
         setupCharacterRenderers();
         loadBackground();
         gameManager.getStoryManager().showIntro();
@@ -560,14 +562,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 projectiles.add(createEnemyProjectile());
                 break;
         }
-        // Cek Devil masuk phase 2
-        if (gameManager.getCurrentEnemy() instanceof enemies.Devil &&
-                gameManager.getCurrentEnemy().getPhase() == 2 &&
-                !showingStory) {
-            showingStory = true;
-            storyTimer   = 0;
-            gameManager.getStoryManager().showDevilPhase2();
-        }
 
         if (gameManager.isGameOver()) {
             if (gameManager.checkEnding().equals("BAD_ENDING")) {
@@ -613,14 +607,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     enemy.getGreenZone(), enemy.getYellowZone()
             );
         }
-        // Cek Devil masuk phase 2
-        if (gameManager.getCurrentEnemy() instanceof enemies.Devil) {
+        // Cek Devil phase 2 — hanya sekali
+        if (!devilPhase2Shown &&
+                gameManager.getCurrentEnemy() instanceof enemies.Devil) {
             enemies.Devil devil = (enemies.Devil) gameManager.getCurrentEnemy();
-            if (devil.getPhase() == 2 && !showingStory
-                    && !gameManager.getStoryManager().isDisplaying()) {
-                showingStory = true;
-                storyTimer   = 0;
+            if (devil.getPhase() == 2) {
+                devilPhase2Shown = true;
+                showingStory     = true;
+                storyTimer       = 0;
+                bounceBar.setActive(false); // stop bar dulu
                 gameManager.getStoryManager().showDevilPhase2();
+
+                bounceBar.configure(
+                        devil.getBounceCount(),
+                        devil.getBounceInterval(),
+                        devil.getGreenZone(),
+                        devil.getYellowZone()
+                );
             }
         }
     }
