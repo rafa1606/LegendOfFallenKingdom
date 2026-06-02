@@ -39,7 +39,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private String             playerNameInput   = "";
     private boolean            isInputtingName   = false;
     private boolean enemyDying = false;
-    private boolean devilPhase2Shown = false; // ← TAMBAH INI
+    private boolean devilPhase2Shown = false;
+    private String menuState = "MAIN"; // MAIN, HOWTOPLAY, CREDIT
+    private Rectangle btnPlay      = new Rectangle(300, 220, 200, 45);
+    private Rectangle btnHowToPlay = new Rectangle(300, 275, 200, 45);
+    private Rectangle btnCredit    = new Rectangle(300, 330, 200, 45);
+    private Rectangle btnMute      = new Rectangle(300, 385, 200, 45);
+    private Rectangle btnExit      = new Rectangle(300, 440, 200, 45);
+    private Rectangle btnBack      = new Rectangle(300, 400, 200, 45);
 
     private static class FloatingText {
         String text; int x, y; float alpha; Color color;
@@ -63,6 +70,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         gameLoop      = new Timer(1000 / 60, this);
         gameLoop.start();
         SoundManager.getInstance().playBGM("menu");
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleMouseClick(e.getX(), e.getY());
+            }
+        });
     }
 
     private BufferedImage loadImage(String path) {
@@ -90,6 +103,29 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             SoundManager.getInstance().playBGM("boss");
         } else {
             SoundManager.getInstance().playBGM("battle");
+        }
+    }
+
+    private void handleMouseClick(int mx, int my) {
+        if (gameState.equals("MENU")) {
+            if (menuState.equals("MAIN")) {
+                if (btnPlay.contains(mx, my)) {
+                    startBattle();
+                } else if (btnHowToPlay.contains(mx, my)) {
+                    menuState = "HOWTOPLAY";
+                } else if (btnCredit.contains(mx, my)) {
+                    menuState = "CREDIT";
+                } else if (btnMute.contains(mx, my)) {
+                    SoundManager.getInstance().toggleMute();
+                } else if (btnExit.contains(mx, my)) {
+                    System.exit(0);
+                }
+            } else {
+                // Di sub menu — klik Back
+                if (btnBack.contains(mx, my)) {
+                    menuState = "MAIN";
+                }
+            }
         }
     }
 
@@ -265,16 +301,159 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     private void drawMenu(Graphics2D g2d) {
-        GradientPaint gp = new GradientPaint(0,0,bgTop,0,HEIGHT,bgBottom);
-        g2d.setPaint(gp); g2d.fillRect(0,0,WIDTH,HEIGHT);
-        g2d.setFont(new Font("Georgia", Font.BOLD, 36));
-        g2d.setColor(new Color(220,180,80));
-        drawCentered(g2d, "LEGEND OF THE FALLEN KINGDOM", WIDTH/2, 160);
-        g2d.setFont(new Font("Arial", Font.PLAIN, 16));
-        g2d.setColor(Color.LIGHT_GRAY);
-        drawCentered(g2d, "Tekan ENTER untuk mulai", WIDTH/2, 260);
-        drawCentered(g2d, "Tekan SPACE saat bar di zona HIJAU / KUNING", WIDTH/2, 300);
-        drawCentered(g2d, "Tekan ESC untuk keluar", WIDTH/2, 330);
+        // Background
+        GradientPaint gp = new GradientPaint(0, 0, bgTop, 0, HEIGHT, bgBottom);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, WIDTH, HEIGHT);
+
+        if (menuState.equals("MAIN")) {
+            drawMainMenu(g2d);
+        } else if (menuState.equals("HOWTOPLAY")) {
+            drawHowToPlay(g2d);
+        } else if (menuState.equals("CREDIT")) {
+            drawCredit(g2d);
+        }
+    }
+
+    private void drawMainMenu(Graphics2D g2d) {
+        // Judul
+        g2d.setFont(new Font("Georgia", Font.BOLD, 38));
+        g2d.setColor(new Color(220, 180, 80));
+        drawCentered(g2d, "LEGEND OF THE FALLEN KINGDOM", WIDTH/2, 120);
+
+        g2d.setFont(new Font("Georgia", Font.ITALIC, 16));
+        g2d.setColor(new Color(180, 160, 120));
+        drawCentered(g2d, "Selamatkan kerajaan dari cengkeraman iblis", WIDTH/2, 155);
+
+        // Tombol-tombol
+        String[] labels = {
+                "▶  PLAY",
+                "?  HOW TO PLAY",
+                "♪  " + (SoundManager.getInstance().isMuted() ? "UNMUTE MUSIC" : "MUTE MUSIC"),
+                "✦  CREDIT",
+                "✕  EXIT"
+        };
+        Rectangle[] btns = { btnPlay, btnHowToPlay, btnMute, btnCredit, btnExit };
+
+        Point mouse = getMousePosition();
+        for (int i = 0; i < btns.length; i++) {
+            drawMenuButton(g2d, btns[i], labels[i], mouse);
+        }
+    }
+
+    private void drawMenuButton(Graphics2D g2d, Rectangle btn, String label, Point mouse) {
+        boolean hover = mouse != null && btn.contains(mouse);
+
+        // Background tombol
+        if (hover) {
+            g2d.setColor(new Color(220, 180, 80, 200));
+        } else {
+            g2d.setColor(new Color(0, 0, 0, 160));
+        }
+        g2d.fillRoundRect(btn.x, btn.y, btn.width, btn.height, 12, 12);
+
+        // Border
+        g2d.setColor(hover ? new Color(220, 180, 80) : new Color(100, 90, 70));
+        g2d.setStroke(new BasicStroke(1.5f));
+        g2d.drawRoundRect(btn.x, btn.y, btn.width, btn.height, 12, 12);
+
+        // Label
+        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.setColor(hover ? Color.BLACK : Color.WHITE);
+        drawCentered(g2d, label, btn.x + btn.width/2, btn.y + btn.height/2 + 6);
+    }
+
+    private void drawHowToPlay(Graphics2D g2d) {
+        // Panel
+        g2d.setColor(new Color(0, 0, 0, 200));
+        g2d.fillRoundRect(60, 40, WIDTH - 120, HEIGHT - 100, 20, 20);
+        g2d.setColor(new Color(220, 180, 80));
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRoundRect(60, 40, WIDTH - 120, HEIGHT - 100, 20, 20);
+
+        // Judul
+        g2d.setFont(new Font("Georgia", Font.BOLD, 26));
+        g2d.setColor(new Color(220, 180, 80));
+        drawCentered(g2d, "HOW TO PLAY", WIDTH/2, 80);
+
+        // Isi
+        g2d.setFont(new Font("Arial", Font.PLAIN, 15));
+        g2d.setColor(Color.WHITE);
+        String[] lines = {
+                "Tekan ENTER atau klik PLAY untuk memulai game",
+                "",
+                "Saat battle, bar akan bergerak memantul kiri kanan.",
+                "Tekan SPACE saat bar berada di zona yang tepat:",
+                "",
+                "  🟢  HIJAU  =  PERFECT Damage x2 + bonus combo",
+                "  🟡  KUNING  =  GOOD Damage normal",
+                "  🔴  MERAH  =  MISS Musuh menyerang balik!",
+                "",
+                "Kalahkan semua musuh untuk menyelamatkan kerajaan.",
+                "Skor akhir menentukan ending yang kamu dapatkan:",
+                "",
+                "  ★  Skor ≥ 1500: TRUE ENDING",
+                "  ○  Skor < 1500: NORMAL ENDING",
+                "  ✕  HP habis: BAD ENDING",
+        };
+
+        int lineY = 115;
+        for (String line : lines) {
+            drawCentered(g2d, line, WIDTH/2, lineY);
+            lineY += 22;
+        }
+
+        // Tombol Back
+        drawMenuButton(g2d, btnBack, "← BACK", getMousePosition());
+    }
+
+    private void drawCredit(Graphics2D g2d) {
+        // Panel
+        g2d.setColor(new Color(0, 0, 0, 200));
+        g2d.fillRoundRect(60, 40, WIDTH - 120, HEIGHT - 100, 20, 20);
+        g2d.setColor(new Color(220, 180, 80));
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRoundRect(60, 40, WIDTH - 120, HEIGHT - 100, 20, 20);
+
+        // Judul
+        g2d.setFont(new Font("Georgia", Font.BOLD, 26));
+        g2d.setColor(new Color(220, 180, 80));
+        drawCentered(g2d, "CREDIT", WIDTH/2, 80);
+
+        // Isi
+        g2d.setFont(new Font("Arial", Font.BOLD, 15));
+        g2d.setColor(new Color(220, 180, 80));
+        drawCentered(g2d, "Legend of the Fallen Kingdom", WIDTH/2, 120);
+
+        g2d.setFont(new Font("Arial", Font.PLAIN, 14));
+        g2d.setColor(Color.WHITE);
+
+        String[] members = {
+                "Kelompok 2 B2 PBO",
+                "",
+                "Hafidh Dzaki Fardiansyah",
+                "Rafa Irhamniyansyah A.",
+                "Gloria Olive Vashti Indriani",
+                "Nasa Azmi Shobir",
+                "Irovia Az-Zahra Rizkia Nurjanah",
+                "",
+                "Program Studi D-IV TRPL",
+                "Departemen Teknik Elektro dan Informatika",
+                "Sekolah Vokasi — Universitas Gadjah Mada",
+                "",
+                "Assets: OpenGameArt.org",
+                "Sound: Pixabay.com",
+                "Engine: Java Swing",
+        };
+
+        int lineY = 150;
+        for (String line : members) {
+            drawCentered(g2d, line, WIDTH/2, lineY);
+            lineY += 22;
+        }
+
+        // Tombol Back
+        drawMenuButton(g2d, btnBack, "← BACK", getMousePosition());
     }
 
     private void drawBattle(Graphics2D g2d) {
@@ -669,6 +848,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 } else if (gameState.equals("HIGHSCORE")) {
                     gameManager = new GameManager();
                     gameState   = "MENU";
+                    menuState   = "MAIN";
                     SoundManager.getInstance().playBGM("menu");
                 }
                 break;

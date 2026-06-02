@@ -2,7 +2,7 @@ package enemies;
 
 public class Goblin extends Enemy {
 
-    // ── Constructor (Phase 1 stats) ──────────────────────────
+    // ── Constructor (Phase 1 stats)
     public Goblin() {
         super("Goblin", 50, 5, 0,
               50, 0,          // xpReward, healReward
@@ -20,8 +20,6 @@ public class Goblin extends Enemy {
     @Override
     public void triggerPhase2() {
         super.triggerPhase2();
-
-        // Update ke stat Phase 2
         setMaxHp(30);
         setHp(30);
         setAttack(10);

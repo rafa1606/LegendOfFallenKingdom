@@ -27,13 +27,13 @@ public class Player extends Character implements Attackable, Skillable {
         this.missCount     = 0;
     }
 
-    // ── Override attack() ────────────────────────────────────
+    // ── Override attack()
     @Override
     public void attack() {
         System.out.println(getName() + " melepas panah! Damage: " + getAttack());
     }
 
-    // ── Overload attack(String type) ─────────────────────────
+    // ── Overload attack(String type)
     public void attack(String type) {
         switch (type) {
             case "PERFECT":
