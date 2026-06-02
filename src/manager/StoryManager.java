@@ -12,7 +12,7 @@ public class StoryManager {
     private boolean isDisplaying  = false;
     private boolean isDone        = false;
 
-    // ── Narasi ───────────────────────────────────────────────
+    // Narasi
     private static final String INTRO =
             "Kerajaan telah jatuh ke dalam kegelapan...\n" +
                     "Sang Daren, harapan terakhir umat manusia,\n" +
@@ -30,7 +30,7 @@ public class StoryManager {
             "Kau berani datang ke hadapanku?\n" +
                     "Rasakan kekuatan kegelapan yang sesungguhnya!";
 
-    // ── Mulai tampilkan teks ──────────────────────────────────
+    // Mulai tampilkan teks
     public void showIntro() {
         startText(INTRO);
     }
@@ -60,7 +60,7 @@ public class StoryManager {
         this.isDone       = false;
     }
 
-    // ── Update typewriter effect ──────────────────────────────
+    //  Update typewriter effect
     public void update() {
         if (!isDisplaying || isDone) return;
         textTimer++;
@@ -74,19 +74,19 @@ public class StoryManager {
         }
     }
 
-    // ── Skip langsung ke akhir ────────────────────────────────
+    // Skip langsung ke akhir
     public void skipText() {
         displayIndex = currentText.length();
         isDone       = true;
     }
 
-    // ── Teks yang ditampilkan sekarang ────────────────────────
+    // Teks yang ditampilkan sekarang
     public String getDisplayedText() {
         if (currentText.isEmpty()) return "";
         return currentText.substring(0, displayIndex);
     }
 
-    // ── Getters ───────────────────────────────────────────────
+    // Getters
     public boolean isDisplaying() { return isDisplaying; }
     public boolean isDone()       { return isDone; }
 
@@ -96,7 +96,7 @@ public class StoryManager {
         displayIndex = 0;
     }
 
-    // ── Ending ───────────────────────────────────────────────
+    //  Ending
     public void showEnding(Player player) {
         String type = player.getPerformanceGrade();
         if (type.equals("TRUE_ENDING")) {

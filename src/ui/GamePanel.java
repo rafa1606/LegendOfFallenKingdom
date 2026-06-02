@@ -327,11 +327,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         // Tombol-tombol
         String[] labels = {
-                "▶  PLAY",
-                "?  HOW TO PLAY",
-                "♪  " + (SoundManager.getInstance().isMuted() ? "UNMUTE MUSIC" : "MUTE MUSIC"),
-                "✦  CREDIT",
-                "✕  EXIT"
+                "PLAY",
+                "HOW TO PLAY",
+                "" + (SoundManager.getInstance().isMuted() ? "UNMUTE MUSIC" : "MUTE MUSIC"),
+                "CREDIT",
+                "EXIT"
         };
         Rectangle[] btns = { btnPlay, btnHowToPlay, btnMute, btnCredit, btnExit };
 
@@ -385,16 +385,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 "Saat battle, bar akan bergerak memantul kiri kanan.",
                 "Tekan SPACE saat bar berada di zona yang tepat:",
                 "",
-                "  🟢  HIJAU  =  PERFECT Damage x2 + bonus combo",
-                "  🟡  KUNING  =  GOOD Damage normal",
-                "  🔴  MERAH  =  MISS Musuh menyerang balik!",
+                "HIJAU  =  PERFECT Damage x2 + bonus combo",
+                "KUNING  =  GOOD Damage normal",
+                "MERAH  =  MISS Musuh menyerang balik!",
                 "",
                 "Kalahkan semua musuh untuk menyelamatkan kerajaan.",
                 "Skor akhir menentukan ending yang kamu dapatkan:",
                 "",
-                "  ★  Skor ≥ 1500: TRUE ENDING",
-                "  ○  Skor < 1500: NORMAL ENDING",
-                "  ✕  HP habis: BAD ENDING",
+                "Skor ≥ 1500: TRUE ENDING",
+                "Skor < 1500: NORMAL ENDING",
+                "HP habis: BAD ENDING",
         };
 
         int lineY = 115;
