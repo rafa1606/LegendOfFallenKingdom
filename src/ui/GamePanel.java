@@ -735,8 +735,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 SoundManager.getInstance().playSFX("miss");
                 floatingTexts.add(new FloatingText("MISS!", fx, fy, Color.RED));
                 if (archerRenderer != null) archerRenderer.triggerHit();
-                if (enemyRenderer  != null) enemyRenderer.triggerAttack();
-
                 // Tembak sihir dari musuh ke Daren
                 projectiles.add(createEnemyProjectile());
                 break;
@@ -786,7 +784,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     enemy.getGreenZone(), enemy.getYellowZone()
             );
         }
-        // Cek Devil phase 2 — hanya sekali
+        // Cek Devil phase 2  hanya sekali
         if (!devilPhase2Shown &&
                 gameManager.getCurrentEnemy() instanceof enemies.Devil) {
             enemies.Devil devil = (enemies.Devil) gameManager.getCurrentEnemy();

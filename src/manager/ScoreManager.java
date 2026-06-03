@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ScoreManager {
 
-    // ── Inner class untuk entry leaderboard ──────────────────
+    // Inner class untuk entry leaderboard
     public static class ScoreEntry implements Comparable<ScoreEntry> {
         private String name;
         private int    score;
@@ -30,16 +30,16 @@ public class ScoreManager {
         }
     }
 
-    // ── Atribut ──────────────────────────────────────────────
+    // Atribut
     private List<ScoreEntry> leaderboard;
     private static final int MAX_ENTRIES = 10;
 
-    // ── Constructor ──────────────────────────────────────────
+    // Constructor
     public ScoreManager() {
         this.leaderboard = new ArrayList<>();
     }
 
-    // ── Simpan skor ──────────────────────────────────────────
+    // Simpan skor
     public void saveScore(String name, int score) {
         leaderboard.add(new ScoreEntry(name, score));
         Collections.sort(leaderboard);
@@ -49,7 +49,7 @@ public class ScoreManager {
         System.out.println("Skor disimpan! " + name + ": " + score);
     }
 
-    // ── Tampilkan leaderboard ─────────────────────────────────
+    // Tampilkan leaderboard
     public void showHighScore() {
         System.out.println("\n=== HIGHSCORE ===");
         if (leaderboard.isEmpty()) {
@@ -62,6 +62,6 @@ public class ScoreManager {
         System.out.println("=================");
     }
 
-    // ── Getter ────────────────────────────────────────────────
+    //  Getter
     public List<ScoreEntry> getLeaderboard() { return leaderboard; }
 }

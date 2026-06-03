@@ -31,7 +31,7 @@ public class DarkKnight extends Enemy {
         System.out.println("[Visual] Pedang cahaya hijau, kabut hijau/ungu di kaki");
     }
 
-    // ── Pasif Phase 2: Poison ─────────────────────────────────
+    // Pasif Phase 2
     public int getPoisonDamage() { return poisonDamage; }
 
     public void applyPoison(abstract_.Character target) {

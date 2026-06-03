@@ -14,13 +14,13 @@ public class Devil extends Enemy implements Skillable {
         this.hpRegen = 8;      // regen lebih besar dari 5
     }
 
-    // ── Override attack() ─────────────────────────────────────
+    // Override attack()
     @Override
     public void attack() {
         System.out.println("Devil menyerang dengan kekuatan iblis! Damage: " + getAttack());
     }
 
-    // ── Overload attack(String skill) ────────────────────────
+    // Overload attack(String skill)
     public void attack(String skill) {
         switch (skill) {
             case "CURSE":
@@ -34,13 +34,13 @@ public class Devil extends Enemy implements Skillable {
         }
     }
 
-    // ── Overload attack(int dmg, boolean regen) ───────────────
+    // Overload attack(int dmg, boolean regen)
     public void attack(int extraDmg, boolean withRegen) {
         System.out.println("Devil menyerang dengan " + extraDmg + " damage tambahan!");
         if (withRegen) regenHp();
     }
 
-    // ── HP Regen pasif per pantulan ───────────────────────────
+    // HP Regen pasif per pantulan
     public void regenHp() {
         healHp(hpRegen);
         System.out.println("Devil regenerasi HP! +" + hpRegen + " HP. HP: " + getHp());
@@ -62,7 +62,7 @@ public class Devil extends Enemy implements Skillable {
         System.out.println("DEVIL PHASE 2!");
     }
 
-    // ── Implementasi Skillable ────────────────────────────────
+    // Implementasi Skillable
     @Override
     public void activatePassive() {
         regenHp();
@@ -73,7 +73,7 @@ public class Devil extends Enemy implements Skillable {
         return "HP Regen: +" + hpRegen + " HP setiap pantulan";
     }
 
-    // ── Getter ────────────────────────────────────────────────
+    // Getter
     public int getHpRegen() { return hpRegen; }
 
     @Override

@@ -6,7 +6,7 @@ import interfaces.Skillable;
 
 public class Player extends Character implements Attackable, Skillable {
 
-    // ── Atribut tambahan Player ──────────────────────────────
+    //  Atribut tambahan Player
     private int xp;
     private int xpToNextLevel;
     private int score;
@@ -15,7 +15,7 @@ public class Player extends Character implements Attackable, Skillable {
     private int goodCount;
     private int missCount;
 
-    // ── Constructor ──────────────────────────────────────────
+    // Constructor
     public Player(String name) {
         super(name, 100, 10, 2);
         this.xp            = 0;
@@ -27,13 +27,13 @@ public class Player extends Character implements Attackable, Skillable {
         this.missCount     = 0;
     }
 
-    // ── Override attack()
+    // Override attack()
     @Override
     public void attack() {
         System.out.println(getName() + " melepas panah! Damage: " + getAttack());
     }
 
-    // ── Overload attack(String type)
+    // Overload attack(String type)
     public void attack(String type) {
         switch (type) {
             case "PERFECT":
@@ -48,7 +48,7 @@ public class Player extends Character implements Attackable, Skillable {
         }
     }
 
-    // ── Override takeDamage() ────────────────────────────────
+    // Override takeDamage()
     @Override
     public void takeDamage(int dmg) {
         super.takeDamage(dmg);
@@ -56,7 +56,7 @@ public class Player extends Character implements Attackable, Skillable {
         System.out.println(getName() + " terkena serangan! HP tersisa: " + getHp());
     }
 
-    // ── Sistem XP & Leveling ─────────────────────────────────
+    //  Sistem XP & Leveling
     public void gainXP(int amount) {
         this.xp += amount;
         System.out.println("+" + amount + " XP! Total: " + xp + "/" + xpToNextLevel);
@@ -94,7 +94,7 @@ public class Player extends Character implements Attackable, Skillable {
         manager.SoundManager.getInstance().playSFX("levelup");
     }
 
-    // ── Sistem Combo ─────────────────────────────────────────
+    //  Sistem Combo
     public void checkCombo(String result) {
         if (result.equals("PERFECT")) {
             comboCount++;
@@ -115,7 +115,7 @@ public class Player extends Character implements Attackable, Skillable {
         }
     }
 
-    // ── Implementasi Skillable ───────────────────────────────
+    // Implementasi Skillable
     @Override
     public void activatePassive() {
         // Adrenaline Heal: heal +15 setiap combo 3x
@@ -128,7 +128,7 @@ public class Player extends Character implements Attackable, Skillable {
         return "Combo Perfect: damage x combo | Adrenaline Heal (combo 3x): +15 HP";
     }
 
-    // ── Override getStatus() ─────────────────────────────────
+    // Override getStatus()
     @Override
     public String getStatus() {
         return "[ARCHER] " + getName() +
@@ -140,7 +140,7 @@ public class Player extends Character implements Attackable, Skillable {
                " | Combo: " + comboCount;
     }
 
-    // ── Getters ──────────────────────────────────────────────
+    // Getters
     public int getXp()           { return xp; }
     public int getXpToNextLevel(){ return xpToNextLevel; }
     public int getScore()        { return score; }
@@ -153,7 +153,7 @@ public class Player extends Character implements Attackable, Skillable {
         this.score += amount;
     }
 
-    // ── Performa untuk sistem ending ─────────────────────────
+    // Performa untuk sistem ending
     public String getPerformanceGrade() {
         int total = perfectCount + goodCount + missCount;
         if (total == 0) return "N/A";

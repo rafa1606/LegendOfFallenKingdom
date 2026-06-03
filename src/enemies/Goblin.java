@@ -2,21 +2,21 @@ package enemies;
 
 public class Goblin extends Enemy {
 
-    // ── Constructor (Phase 1 stats)
+    // Constructor (Phase 1 stats)
     public Goblin() {
         super("Goblin", 50, 5, 0,
-              50, 0,          // xpReward, healReward
-              4, 1.5f,        // bounceCount, bounceInterval
-              0.30f, 0.40f);  // greenZone, yellowZone (merah = 30%)
+              50, 0,
+              4, 1.5f,
+              0.30f, 0.40f);
     }
 
-    // ── Override attack() ────────────────────────────────────
+    // Override attack()
     @Override
     public void attack() {
         System.out.println("Goblin menyerang secara acak! Damage: " + getAttack());
     }
 
-    // ── Override triggerPhase2() ─────────────────────────────
+    // Override triggerPhase2()
     @Override
     public void triggerPhase2() {
         super.triggerPhase2();
@@ -26,7 +26,7 @@ public class Goblin extends Enemy {
         setBounceCount(3);
         setBounceInterval(1.0f);
         setGreenZone(0.25f);
-        setYellowZone(0.35f);  // merah = 40%
+        setYellowZone(0.35f);
         setXpReward(100);
         setHealReward(30);
 
@@ -34,7 +34,7 @@ public class Goblin extends Enemy {
         System.out.println("[Visual] Badan merah, aura bayangan, mata menyala terang");
     }
 
-    // ── Pasif Phase 2: Kecepatan bar acak ────────────────────
+    // Pasif Phase 2: Kecepatan bar acak
     public float getRandomBounceInterval() {
         if (getPhase() == 2 && isPassiveActive()) {
             // Random antara 0.5 - 1.5 detik

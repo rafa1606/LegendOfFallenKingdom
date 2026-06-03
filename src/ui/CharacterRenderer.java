@@ -12,6 +12,7 @@ public class CharacterRenderer {
     private List<BufferedImage> idleFrames   = new ArrayList<>();
     private List<BufferedImage> attackFrames = new ArrayList<>();
     private List<BufferedImage> hurtFrames   = new ArrayList<>();
+    private List<BufferedImage> deathFrames  = new ArrayList<>();
     private List<BufferedImage> currentFrames;
 
     private int     frameIndex    = 0;
@@ -26,15 +27,8 @@ public class CharacterRenderer {
     private int     hitTimer      = 0;
     private double  idleTimer     = 0;
     private int     idleOffsetY   = 0;
-    // Tambah atribut ini di atas class
-    private boolean isWalking    = false;
-    private int     walkOffsetX  = 0;
-    private int     walkTimer    = 0;
-    private int     walkDuration = 40; // frame jalan
-    private boolean walkingRight = false;
-    private List<BufferedImage> deathFrames = new ArrayList<>();
-    private boolean isDying   = false;
-    private boolean deathDone = false;
+    private boolean isDying       = false;
+    private boolean deathDone     = false;
 
     public CharacterRenderer(String folder,
                              String idlePrefix,
@@ -55,27 +49,25 @@ public class CharacterRenderer {
         idleFrames   = loadFrames(folder, idlePrefix);
         attackFrames = loadFrames(folder, attackPrefix);
         hurtFrames   = loadFrames(folder, hurtPrefix);
-        deathFrames = loadFrames(folder, deathPrefix);
+        deathFrames  = loadFrames(folder, deathPrefix);
         currentFrames = idleFrames;
 
         System.out.println("[" + folder + "]");
         System.out.println("  Idle  : " + idleFrames.size() + " frames");
         System.out.println("  Attack: " + attackFrames.size() + " frames");
         System.out.println("  Hurt  : " + hurtFrames.size() + " frames");
+        System.out.println("  Death : " + deathFrames.size() + " frames");
     }
 
     private List<BufferedImage> loadFrames(String folder, String prefix) {
         List<BufferedImage> frames = new ArrayList<>();
         if (prefix == null || prefix.isEmpty()) return frames;
-
         for (int i = 0; i < 30; i++) {
-            // Coba 3 format angka: 000, 00, 0
             String[] names = {
                     String.format("%s%03d.png", prefix, i),
                     String.format("%s%02d.png", prefix, i),
                     String.format("%s%d.png",   prefix, i),
             };
-
             boolean loaded = false;
             for (String name : names) {
                 File f = new File(folder + "/" + name);
@@ -84,18 +76,16 @@ public class CharacterRenderer {
                         frames.add(ImageIO.read(f));
                         loaded = true;
                         break;
-                    } catch (Exception e) {
-                        System.out.println("Error baca: " + name);
-                    }
+                    } catch (Exception ignored) {}
                 }
             }
-            // Stop kalau frame i=1 ke atas tidak ketemu
             if (!loaded && i > 0) break;
         }
         return frames;
     }
 
     public void update() {
+        // Animasi mati
         if (isDying) {
             currentFrames = deathFrames.isEmpty() ? hurtFrames : deathFrames;
             frameTimer++;
@@ -109,36 +99,20 @@ public class CharacterRenderer {
             }
             return;
         }
+
+        // Spawn dari atas
         if (isSpawning) {
             y += 10;
             if (y >= targetY) { y = targetY; isSpawning = false; }
             return;
         }
 
+        // Idle gerak naik turun
         idleTimer  += 0.05;
         idleOffsetY = (int)(Math.sin(idleTimer) * 5);
 
-        // ── Enemy walk attack ────────────────────────────────
-        if (isWalking) {
-            walkTimer++;
-            int direction = walkingRight ? 1 : -1;
-            int halfDuration = walkDuration / 2;
-
-            if (walkTimer <= halfDuration) {
-                // Jalan maju ke arah player
-                walkOffsetX += direction * 20;
-                currentFrames = attackFrames.isEmpty() ? idleFrames : attackFrames;
-            } else if (walkTimer <= walkDuration) {
-                // Balik ke posisi asal
-                walkOffsetX -= direction * 20;
-                currentFrames = idleFrames;
-            } else {
-                // Selesai walk
-                isWalking   = false;
-                walkOffsetX = 0;
-                walkTimer   = 0;
-            }
-        } else if (isAttacking) {
+        // Pilih animasi
+        if (isAttacking) {
             attackOffsetX = facingRight ? 15 : -15;
             currentFrames = attackFrames.isEmpty() ? idleFrames : attackFrames;
         } else if (isHit) {
@@ -148,7 +122,7 @@ public class CharacterRenderer {
             attackOffsetX = 0;
         }
 
-        // Ganti frame animasi
+        // Ganti frame
         if (!currentFrames.isEmpty()) {
             frameTimer++;
             if (frameTimer >= frameDelay) {
@@ -163,23 +137,10 @@ public class CharacterRenderer {
         }
     }
 
-    // Musuh jalan ke player lalu balik
-    public void triggerWalkAttack(boolean walkRight) {
-        if (!isWalking) {
-            isWalking    = true;
-            walkingRight = walkRight;
-            walkTimer    = 0;
-            walkOffsetX  = 0;
-            frameIndex   = 0;
-            frameTimer   = 0;
-        }
-    }
-
     public void draw(Graphics2D g2d) {
-        int drawX = x + attackOffsetX + walkOffsetX; // tambah walkOffsetX
+        int drawX = x + attackOffsetX;
         int drawY = y + idleOffsetY;
 
-        // Kalau tidak ada sprite → pakai placeholder
         if (currentFrames == null || currentFrames.isEmpty()) {
             g2d.setColor(facingRight
                     ? new Color(30, 100, 170)
@@ -187,7 +148,7 @@ public class CharacterRenderer {
             g2d.fillRoundRect(drawX, drawY, width, height, 20, 20);
             g2d.setColor(Color.WHITE);
             g2d.setFont(new Font("Arial", Font.BOLD, 12));
-            g2d.drawString(facingRight ? "ARCHER" : "ENEMY",
+            g2d.drawString(facingRight ? "DAREN" : "ENEMY",
                     drawX + 10, drawY + height / 2);
             return;
         }
@@ -197,7 +158,6 @@ public class CharacterRenderer {
         if (frame == null) return;
 
         if (!facingRight) {
-            // Flip horizontal untuk musuh
             g2d.drawImage(frame, drawX + width, drawY, -width, height, null);
         } else {
             g2d.drawImage(frame, drawX, drawY, width, height, null);
@@ -220,6 +180,7 @@ public class CharacterRenderer {
             frameTimer = 0;
         }
     }
+
     public void triggerDeath() {
         if (!isDying) {
             isDying    = true;
@@ -231,6 +192,5 @@ public class CharacterRenderer {
 
     public boolean isDeathDone() { return deathDone; }
     public boolean isDying()     { return isDying; }
-
-    public boolean isSpawning() { return isSpawning; }
+    public boolean isSpawning()  { return isSpawning; }
 }

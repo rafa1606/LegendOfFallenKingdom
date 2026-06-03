@@ -147,7 +147,7 @@ public class BattleManager {
         }
     }
 
-    // ── Getters ──────────────────────────────────────────────
+    // Getters
     public boolean isBattleOver()    { return isBattleOver;  }
     public String  getBattleResult() { return battleResult;  }
     public String  getCurrentZone()  { return currentZone;   }

@@ -27,8 +27,8 @@ public class Orc extends Enemy {
         System.out.println("[Visual] Badan membesar, aura merah/orange, tekstur batu/besi");
     }
 
-    // ── Pasif Phase 2: Damage transfer ───────────────────────
-    // Dipanggil di BattleManager saat result != PERFECT
+    // Pasif Phase 2: Damage transfer
+    // Dipanggil di BattleManager saat hasil PERFECT
     public int getDamageTransfer(int playerDamage) {
         if (getPhase() == 2 && isPassiveActive()) {
             int transferred = playerDamage / 2;

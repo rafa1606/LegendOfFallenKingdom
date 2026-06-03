@@ -6,9 +6,9 @@ public class StoryManager {
 
     private int     currentStage  = 0;
     private String  currentText   = "";
-    private int     displayIndex  = 0;  // huruf yang sudah ditampilkan
+    private int     displayIndex  = 0;
     private int     textTimer     = 0;
-    private int     textSpeed     = 3;  // makin kecil makin cepat
+    private int     textSpeed     = 3;
     private boolean isDisplaying  = false;
     private boolean isDone        = false;
 

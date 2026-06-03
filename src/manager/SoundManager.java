@@ -5,7 +5,7 @@ import java.io.File;
 
 public class SoundManager {
 
-    // ── Atribut ──────────────────────────────────────────────
+    // Atribut
     private Clip    bgmClip;     // musik background (loop)
     private float   bgmVolume  = 0.8f;
     private float   sfxVolume  = 1.0f;
@@ -13,14 +13,14 @@ public class SoundManager {
 
     private static final String SOUND_PATH = "assets/sounds/";
 
-    // ── Singleton ─────────────────────────────────────────────
+    // Singleton
     private static SoundManager instance;
     public static SoundManager getInstance() {
         if (instance == null) instance = new SoundManager();
         return instance;
     }
 
-    // ── Play BGM (loop) ───────────────────────────────────────
+    // Play BGM (loop)
     public void playBGM(String fileName) {
         try {
             stopBGM(); // stop BGM sebelumnya
@@ -40,7 +40,7 @@ public class SoundManager {
         }
     }
 
-    // ── Stop BGM ──────────────────────────────────────────────
+    // Stop BGM
     public void stopBGM() {
         if (bgmClip != null && bgmClip.isRunning()) {
             bgmClip.stop();
@@ -48,7 +48,7 @@ public class SoundManager {
         }
     }
 
-    // ── Play SFX (sekali putar) ───────────────────────────────
+    // Play SFX (sekali putar)
     public void playSFX(String fileName) {
         if (isMuted) return;
         try {
@@ -73,7 +73,7 @@ public class SoundManager {
         }
     }
 
-    // ── Set volume ────────────────────────────────────────────
+    // Set volume
     private void setVolume(Clip clip, float volume) {
         try {
             FloatControl fc = (FloatControl) clip.getControl(
@@ -85,7 +85,7 @@ public class SoundManager {
         }
     }
 
-    // ── Mute / Unmute ─────────────────────────────────────────
+    // Mute / Unmute
     public void toggleMute() {
         isMuted = !isMuted;
         if (isMuted) {

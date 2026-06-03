@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class BounceBar {
 
-    // ── Atribut ──────────────────────────────────────────────
+    // Atribut
     private int     x, y, width, height;
     private float   position;    // 0.0 = kiri, 1.0 = kanan
     private float   speed;       // kecepatan gerak per frame
@@ -13,18 +13,18 @@ public class BounceBar {
     private int     bounceCount;  // sisa pantulan
     private int     maxBounce;
 
-    // Zona (dalam persentase 0.0 - 1.0)
+    // Zona
     private float greenZone;    // lebar zona hijau di tengah
     private float yellowZone;   // lebar zona kuning di samping hijau
 
-    // ── Warna zona ────────────────────────────────────────────
+    // Warna zona
     private static final Color COLOR_GREEN  = new Color(60, 200, 80);
     private static final Color COLOR_YELLOW = new Color(240, 200, 40);
     private static final Color COLOR_RED    = new Color(220, 50, 50);
     private static final Color COLOR_BAR    = Color.WHITE;
     private static final Color COLOR_BG     = new Color(30, 30, 30, 180);
 
-    // ── Constructor ──────────────────────────────────────────
+    // Constructor
     public BounceBar(int x, int y, int width, int height) {
         this.x       = x;
         this.y       = y;
@@ -35,27 +35,26 @@ public class BounceBar {
         this.active  = false;
     }
 
-    // ── Set config dari musuh ─────────────────────────────────
+    // Set config dari musuh
     public void configure(int bounceCount, float intervalSeconds,
                           float greenZone, float yellowZone) {
         this.maxBounce   = bounceCount;
         this.bounceCount = bounceCount;
         this.greenZone   = greenZone;
         this.yellowZone  = yellowZone;
-        // Speed: 1.0 / (interval * 60fps) untuk satu kali lebar
         this.speed       = 1.0f / (intervalSeconds * 60.0f);
         this.position    = 0.0f;
         this.movingRight = true;
         this.active      = true;
     }
 
-    // ── Set kecepatan random (pasif Goblin phase 2) ───────────
+    // Set kecepatan random (pasif Goblin phase 2)
     public void setRandomSpeed(float minInterval, float maxInterval) {
         float interval = minInterval + (float)(Math.random() * (maxInterval - minInterval));
         this.speed     = 1.0f / (interval * 60.0f);
     }
 
-    // ── Update tiap frame ─────────────────────────────────────
+    // Update tiap frame
     public void update() {
         if (!active) return;
 
@@ -76,7 +75,7 @@ public class BounceBar {
             }
         }
 
-        // Habis pantulan → bar berhenti
+        // Habis pantulan bar berhenti
         if (bounceCount <= 0) {
             active = false;
         }
@@ -147,7 +146,7 @@ public class BounceBar {
         }
     }
 
-    // ── Getters ──────────────────────────────────────────────
+    // Getters
     public boolean isActive()   { return active; }
     public float   getPosition(){ return position; }
     public void    setActive(boolean active) { this.active = active; }

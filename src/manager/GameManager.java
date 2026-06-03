@@ -5,7 +5,7 @@ import enemies.*;
 
 public class GameManager {
 
-    // ── Atribut ──────────────────────────────────────────────
+    // Atribut
     private Player        player;
     private Enemy         currentEnemy;
     private BattleManager battleManager;
@@ -14,7 +14,7 @@ public class GameManager {
     private int           stage;        // 1=Goblin, 2=Orc, 3=DarkKnight, 4=Devil
     private boolean       isGameOver;
 
-    // ── Constructor ──────────────────────────────────────────
+    // Constructor
     public GameManager() {
         this.player        = new Player("Daren");
         this.battleManager = new BattleManager(player);
@@ -24,14 +24,14 @@ public class GameManager {
         this.isGameOver    = false;
     }
 
-    // ── Start game ───────────────────────────────────────────
+    // Start game
     public void startGame() {
         System.out.println("=== LEGEND OF THE FALLEN KINGDOM ===");
         storyManager.showIntro();
         spawnEnemy();
     }
 
-    // ── Spawn musuh sesuai stage ─────────────────────────────
+    // Spawn musuh sesuai stage
     public void spawnEnemy() {
         switch (stage) {
             case 1: currentEnemy = new Goblin();    break;
@@ -46,7 +46,7 @@ public class GameManager {
         System.out.println("\n[STAGE " + stage + "] " + currentEnemy.getName() + " muncul!");
     }
 
-    // ── Proses input dari GamePanel ──────────────────────────
+    // Proses input dari GamePanel
     public void processInput(String zone) {
         if (isGameOver) return;
         battleManager.processInput(zone);
@@ -62,7 +62,7 @@ public class GameManager {
         }
     }
 
-    // ── Lanjut ke stage berikutnya ───────────────────────────
+    // Lanjut ke stage berikutnya
     public void nextStage() {
         stage++;
         if (stage > 4) {
@@ -74,20 +74,20 @@ public class GameManager {
         spawnEnemy();
     }
 
-    // ── Game selesai ─────────────────────────────────────────
+    // Game selesai
     public void endGame() {
         isGameOver = true;
         storyManager.showEnding(player);
     }
 
-    // ── Cek ending berdasarkan skor ───────────────────────────
+    // Cek ending berdasarkan skor
     public String checkEnding() {
         if (!player.isAlive())           return "BAD_ENDING";
         if (player.getScore() >= 1500)   return "TRUE_ENDING";
         return "NORMAL_ENDING";
     }
 
-    // ── Tampilkan skor ────────────────────────────────────────
+    //  Tampilkan skor
     public void showScore() {
         System.out.println("\n=== FINAL SCORE ===");
         System.out.println("Nama   : " + player.getName());
@@ -99,7 +99,7 @@ public class GameManager {
         System.out.println("Ending : " + checkEnding());
     }
 
-    // ── Getters ──────────────────────────────────────────────
+    // Getters
     public Player        getPlayer()        { return player; }
     public Enemy         getCurrentEnemy()  { return currentEnemy; }
     public BattleManager getBattleManager() { return battleManager; }
